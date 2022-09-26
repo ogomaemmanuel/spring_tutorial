@@ -1,4 +1,4 @@
-package ke.co.safaricom.blog.dao;
+package ke.co.safaricom.blog.dto;
 
 import javax.validation.constraints.NotBlank;
 

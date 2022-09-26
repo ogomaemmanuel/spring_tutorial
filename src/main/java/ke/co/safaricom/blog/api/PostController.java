@@ -1,6 +1,7 @@
 package ke.co.safaricom.blog.api;
 
-import ke.co.safaricom.blog.dao.PostCreateRequest;
+import ke.co.safaricom.blog.dto.PostCreateRequest;
+import ke.co.safaricom.blog.dto.PostQuery;
 import ke.co.safaricom.blog.entities.Post;
 import ke.co.safaricom.blog.services.PostService;
 import lombok.RequiredArgsConstructor;
@@ -41,9 +42,16 @@ public class PostController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Post> updatePost(@PathVariable("id") Long id, @RequestBody Post postUpdateRequest) {
+    public ResponseEntity<Post> updatePost(@Valid @PathVariable("id") Long id, @RequestBody Post postUpdateRequest) {
          Optional<Post> post = postService.updatePost(id, postUpdateRequest);
         return ResponseEntity.of(post);
+    }
+
+    @GetMapping("/by-title")
+
+    public ResponseEntity<List<Post>> getAllPostTitles(PostQuery postQuery) {
+      var posts=  this.postService.getAllByTitle(postQuery.getTitle());
+        return ResponseEntity.ok(posts);
     }
 
 

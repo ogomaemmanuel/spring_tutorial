@@ -1,9 +1,8 @@
 package ke.co.safaricom.blog.services;
 
-import ke.co.safaricom.blog.dao.PostCreateRequest;
+import ke.co.safaricom.blog.dto.PostCreateRequest;
 import ke.co.safaricom.blog.repositories.PostRepository;
 import ke.co.safaricom.blog.entities.Post;
-import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -45,6 +44,10 @@ public class PostService {
 
     public List<Post> getAll() {
         return postRepository.findAll();
+    }
+
+    public List<Post> getAllByTitle(String title) {
+        return postRepository.findByTitle(title);
     }
 
     public void deleteByID(Long id) {
