@@ -19,12 +19,7 @@ public class PostService {
     }
 
     public Post create(PostCreateRequest postCreateRequest) {
-        Post post = new Post();
-//        BeanUtils.copyProperties(postCreateRequest,post);
-
-        post.setAuthor(postCreateRequest.getAuthor());
-        post.setTitle(postCreateRequest.getTitle());
-        post.setBody(postCreateRequest.getBody());
+       var post= Post.postfromDto(postCreateRequest);
         return postRepository.save(post);
     }
     public Optional<Post> updatePost (Long postId,Post post) {

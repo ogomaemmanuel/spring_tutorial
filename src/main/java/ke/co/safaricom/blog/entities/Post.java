@@ -2,6 +2,7 @@ package ke.co.safaricom.blog.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonIncludeProperties;
+import ke.co.safaricom.blog.dto.PostCreateRequest;
 import net.bytebuddy.implementation.bind.annotation.Empty;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -87,5 +88,17 @@ public class Post {
 
     public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
+    }
+
+    @PrePersist
+    public void changeTitleToUppercase() {
+
+        this.title= this.title.toUpperCase();
+    }
+
+   public static Post postfromDto(PostCreateRequest request){
+        Post p = new Post();
+        p.setBody(request.getBody());
+        return p;
     }
 }

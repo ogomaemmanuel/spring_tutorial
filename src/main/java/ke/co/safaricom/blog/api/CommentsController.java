@@ -5,6 +5,7 @@ import ke.co.safaricom.blog.entities.Comment;
 import ke.co.safaricom.blog.entities.Post;
 import ke.co.safaricom.blog.services.CommentsService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;

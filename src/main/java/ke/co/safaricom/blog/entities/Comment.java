@@ -13,6 +13,8 @@ public class Comment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String body;
+
+
     @CreationTimestamp
     private LocalDateTime createdAt;
     @UpdateTimestamp
@@ -20,7 +22,6 @@ public class Comment {
 
     @ManyToOne(fetch =FetchType.LAZY)
     @JoinColumn( name= "post_id")
-
     private Post post;
 
 
@@ -63,4 +64,8 @@ public class Comment {
     public void setPost(Post post) {
         this.post = post;
     }
+
+
+
+
 }
