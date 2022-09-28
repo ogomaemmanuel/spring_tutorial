@@ -93,12 +93,14 @@ public class Post {
     @PrePersist
     public void changeTitleToUppercase() {
 
-        this.title= this.title.toUpperCase();
+        this.title= this.getTitle().toUpperCase();
     }
 
    public static Post postfromDto(PostCreateRequest request){
         Post p = new Post();
         p.setBody(request.getBody());
+        p.setTitle(request.getTitle());
+        p.setAuthor(request.getAuthor());
         return p;
     }
 }

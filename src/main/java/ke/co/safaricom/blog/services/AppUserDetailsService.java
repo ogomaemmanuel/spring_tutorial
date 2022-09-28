@@ -1,5 +1,6 @@
 package ke.co.safaricom.blog.services;
 
+import ke.co.safaricom.blog.entities.AppUser;
 import ke.co.safaricom.blog.repositories.AppUserRepository;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -17,6 +18,12 @@ public class AppUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return this.appUserRepository.findByUsername(username);
+
+       AppUser user= this.appUserRepository.findByUsername(username);
+       if(user==null) {
+           throw new UsernameNotFoundException("User " + username + " does not exist");
+       }
+       return user;
+
     }
 }

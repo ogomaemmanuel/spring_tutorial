@@ -92,6 +92,6 @@ public class AppUser implements UserDetails {
 
     @PrePersist
     public void encryptPassword() {
-      this.password=  WebSecurityConfig.passwordEncoder().encode(this.password);
+        this.password=  WebSecurityConfig.passwordEncoder().encode(this.getPassword());
     }
 }
