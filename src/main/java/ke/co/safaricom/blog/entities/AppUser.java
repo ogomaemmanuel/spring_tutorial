@@ -4,12 +4,15 @@ import ke.co.safaricom.blog.config.WebSecurityConfig;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
+
 @Entity
 @Table(name = "users")
 public class AppUser implements UserDetails {
@@ -22,6 +25,9 @@ public class AppUser implements UserDetails {
     private LocalDate createdAt;
     @UpdateTimestamp
     private LocalDate updatedAt;
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name="user_role")
+    private List<Role> roles;
 
     public Long getId() {
         return id;
@@ -57,7 +63,11 @@ public class AppUser implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return new ArrayList<>();
+        ArrayList<GrantedAuthority>  authorities = new ArrayList<GrantedAuthority>();
+        for(Role role : this.getRoles()) {
+            authorities.add(role);
+        }
+        return authorities;
     }
 
     @Override
@@ -94,4 +104,14 @@ public class AppUser implements UserDetails {
     public void encryptPassword() {
         this.password=  WebSecurityConfig.passwordEncoder().encode(this.getPassword());
     }
+
+    public List<Role> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(List<Role> roles) {
+        this.roles = roles;
+    }
+
+
 }

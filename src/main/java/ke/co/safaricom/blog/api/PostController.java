@@ -5,6 +5,7 @@ import ke.co.safaricom.blog.dto.PostQuery;
 import ke.co.safaricom.blog.entities.Post;
 import ke.co.safaricom.blog.services.PostService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -31,7 +32,7 @@ public class PostController {
         return ResponseEntity.ok(postService.create(postCreateRequest));
     }
 
-    @GetMapping("/{id}")
+    @GetMapping(value = "/{id}")
     public ResponseEntity<Post> getPost(@PathVariable("id") Long id) {
         return ResponseEntity.of(this.postService.getPostById(id));
     }
