@@ -5,6 +5,8 @@ import ke.co.safaricom.blog.dto.PostQuery;
 import ke.co.safaricom.blog.entities.Post;
 import ke.co.safaricom.blog.services.PostService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.IanaLinkRelations;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -13,17 +15,22 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.*;
 
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+
 @RestController
 @RequestMapping(value = "posts")
 @RequiredArgsConstructor
+//@PreAuthorize("hasAuthority('Test')")
 public class PostController {
     private final PostService postService;
 
     @GetMapping
     @ResponseBody
-    public ResponseEntity<List<Post>> index() {
-
-        return ResponseEntity.ok(postService.getAll());
+    public ResponseEntity<CollectionModel<Post>> index() {
+        CollectionModel<Post>  postCollectionModel = CollectionModel.of(postService.getAll());
+        postCollectionModel.add(linkTo(methodOn(PostController.class).index()).withRel(IanaLinkRelations.COLLECTION_VALUE));
+        return ResponseEntity.ok(postCollectionModel);
     }
 
     @PostMapping
@@ -33,6 +40,7 @@ public class PostController {
     }
 
     @GetMapping(value = "/{id}")
+   /// @PreAuthorize("isAuthenticated()")
     public ResponseEntity<Post> getPost(@PathVariable("id") Long id) {
         return ResponseEntity.of(this.postService.getPostById(id));
     }

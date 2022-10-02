@@ -20,6 +20,8 @@ public class AppUser implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String username;
+
+    private String email;
     private String password;
     @CreationTimestamp
     private LocalDate createdAt;
@@ -65,7 +67,8 @@ public class AppUser implements UserDetails {
     public Collection<? extends GrantedAuthority> getAuthorities() {
         ArrayList<GrantedAuthority>  authorities = new ArrayList<GrantedAuthority>();
         for(Role role : this.getRoles()) {
-            authorities.add(role);
+            var grantedAuthority= new SimpleGrantedAuthority(role.getName());
+            authorities.add(grantedAuthority);
         }
         return authorities;
     }
@@ -106,7 +109,15 @@ public class AppUser implements UserDetails {
     }
 
     public List<Role> getRoles() {
-        return roles;
+        return roles==null ? new ArrayList<Role>() : roles;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public void setRoles(List<Role> roles) {
