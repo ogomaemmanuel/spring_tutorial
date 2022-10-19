@@ -1,10 +1,13 @@
 package ke.co.safaricom.blog.services;
 
 import ke.co.safaricom.blog.dto.CommentCreateRequest;
+import ke.co.safaricom.blog.dto.CommentsFilter;
 import ke.co.safaricom.blog.entities.Comment;
 import ke.co.safaricom.blog.entities.Post;
 import ke.co.safaricom.blog.repositories.CommentsRepository;
 import ke.co.safaricom.blog.repositories.PostRepository;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -30,7 +33,9 @@ private final PostRepository postRepository;
         return comment;
     }
 
-    public Page<Comment> getComments(Pageable pageable) {
+    public Page<Comment> getComments(Pageable pageable, CommentsFilter filter) {
+        return this.commentsRepository.findAll(filter.commentExample(),pageable);
+    } public Page<Comment> getComments(Pageable pageable) {
         return this.commentsRepository.findAll(pageable);
     }
 

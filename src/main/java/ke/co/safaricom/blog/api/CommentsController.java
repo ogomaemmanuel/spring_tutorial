@@ -1,6 +1,7 @@
 package ke.co.safaricom.blog.api;
 
 import ke.co.safaricom.blog.dto.CommentCreateRequest;
+import ke.co.safaricom.blog.dto.CommentsFilter;
 import ke.co.safaricom.blog.entities.Comment;
 import ke.co.safaricom.blog.services.CommentsService;
 
@@ -44,8 +45,8 @@ private  final PagedResourcesAssembler<Comment> pagedResourcesAssembler;
     }
 
     @GetMapping
-    public ResponseEntity<?> getComments(Pageable pageable){
-       var comments= this.commentsService.getComments(pageable);
+    public ResponseEntity<?> getComments(Pageable pageable, CommentsFilter filter) {
+       var comments= this.commentsService.getComments(pageable,filter);
 
      var pagedResources=  pagedResourcesAssembler.toModel(comments,commentRepModelAssempler);
        return ResponseEntity.ok(pagedResources);
