@@ -6,7 +6,9 @@ import ke.co.safaricom.blog.entities.Post;
 import ke.co.safaricom.blog.services.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.IanaLinkRelations;
+import org.springframework.hateoas.Link;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -15,8 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.*;
 
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
 
 @RestController
 @RequestMapping(value = "posts")
@@ -24,44 +25,51 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 //@PreAuthorize("hasAuthority('Test')")
 public class PostController {
     private final PostService postService;
+    private final PostRepresentationModelAssembler modelAssembler;
 
-    @GetMapping
+    @GetMapping(produces = {
+        MediaType.APPLICATION_JSON_VALUE,MediaType.APPLICATION_XML_VALUE
+    })
     @ResponseBody
-    public ResponseEntity<CollectionModel<Post>> index() {
-        CollectionModel<Post>  postCollectionModel = CollectionModel.of(postService.getAll());
+    public ResponseEntity<CollectionModel<EntityModel<Post>>> index() {
+        var postCollectionModel = this.modelAssembler.toCollectionModel(postService.getAll());
         postCollectionModel.add(linkTo(methodOn(PostController.class).index()).withRel(IanaLinkRelations.COLLECTION_VALUE));
         return ResponseEntity.ok(postCollectionModel);
     }
 
     @PostMapping
-    public ResponseEntity<Post> createPost(@Valid @RequestBody PostCreateRequest postCreateRequest) {
-
-        return ResponseEntity.ok(postService.create(postCreateRequest));
+    public ResponseEntity<EntityModel<Post>> createPost(@Valid @RequestBody PostCreateRequest postCreateRequest) {
+        var post = postService.create(postCreateRequest);
+        var model = modelAssembler.toModel(post);
+        return ResponseEntity.created(linkTo(methodOn(PostController.class).getPost(post.getId())).toUri()).body(model);
     }
 
-    @GetMapping(value = "/{id}")
-   /// @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<Post> getPost(@PathVariable("id") Long id) {
-        return ResponseEntity.of(this.postService.getPostById(id));
+    @GetMapping(value = "/{id}",produces = {
+            MediaType.APPLICATION_JSON_VALUE,MediaType.APPLICATION_XML_VALUE
+    })
+    /// @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<EntityModel<Post>> getPost(@PathVariable("id") Long id) {
+        var post = this.postService.getPostById(id);
+      return post.map(modelAssembler::toModel).map(ResponseEntity::ok).orElse( ResponseEntity.notFound().build());
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deletePost(@PathVariable("id") Long id) {
-       postService.deleteByID(id);
+        postService.deleteByID(id);
         return ResponseEntity.badRequest().body("Record not found");
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Post> updatePost(@Valid @PathVariable("id") Long id, @RequestBody Post postUpdateRequest) {
-         Optional<Post> post = postService.updatePost(id, postUpdateRequest);
-        return ResponseEntity.of(post);
+    public ResponseEntity<EntityModel<Post>> updatePost(@PathVariable("id") Long id, @Valid @RequestBody Post postUpdateRequest) {
+        Optional<Post> post = postService.updatePost(id, postUpdateRequest);
+        return post.map(modelAssembler::toModel).map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
     }
 
     @GetMapping("/by-title")
-
-    public ResponseEntity<List<Post>> getAllPostTitles(PostQuery postQuery) {
-      var posts=  this.postService.getAllByTitle(postQuery.getTitle());
-        return ResponseEntity.ok(posts);
+    public ResponseEntity<CollectionModel<EntityModel<Post>>> getAllPostTitles(PostQuery postQuery) {
+        var posts = this.postService.getAllByTitle(postQuery.getTitle());
+       var collectionModel= modelAssembler.toCollectionModel(posts);
+        return ResponseEntity.ok(collectionModel);
     }
 
 

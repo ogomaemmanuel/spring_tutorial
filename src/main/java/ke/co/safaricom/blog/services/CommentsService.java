@@ -5,7 +5,12 @@ import ke.co.safaricom.blog.entities.Comment;
 import ke.co.safaricom.blog.entities.Post;
 import ke.co.safaricom.blog.repositories.CommentsRepository;
 import ke.co.safaricom.blog.repositories.PostRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Optional;
 
 @Service
 public class CommentsService {
@@ -23,5 +28,13 @@ private final PostRepository postRepository;
         comment.setPost(post);
         this.commentsRepository.save(comment);
         return comment;
+    }
+
+    public Page<Comment> getComments(Pageable pageable) {
+        return this.commentsRepository.findAll(pageable);
+    }
+
+    public Optional<Comment> getCommentById(Long id) {
+       return this.commentsRepository.findById(id);
     }
 }
