@@ -4,14 +4,11 @@ import ke.co.safaricom.blog.dto.PostCreateRequest;
 import ke.co.safaricom.blog.dto.PostQuery;
 import ke.co.safaricom.blog.entities.Post;
 import ke.co.safaricom.blog.services.PostService;
-import lombok.RequiredArgsConstructor;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.IanaLinkRelations;
-import org.springframework.hateoas.Link;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -21,11 +18,16 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
 
 @RestController
 @RequestMapping(value = "posts")
-@RequiredArgsConstructor
+
 //@PreAuthorize("hasAuthority('Test')")
 public class PostController {
     private final PostService postService;
     private final PostRepresentationModelAssembler modelAssembler;
+
+    public PostController(PostService postService, PostRepresentationModelAssembler modelAssembler) {
+        this.postService = postService;
+        this.modelAssembler = modelAssembler;
+    }
 
     @GetMapping(produces = {
         MediaType.APPLICATION_JSON_VALUE,MediaType.APPLICATION_XML_VALUE

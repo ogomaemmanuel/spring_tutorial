@@ -1,6 +1,7 @@
 package ke.co.safaricom.blog.dto;
 
 import ke.co.safaricom.blog.entities.Comment;
+import ke.co.safaricom.blog.entities.Comment_;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
 
@@ -17,9 +18,12 @@ public class CommentsFilter {
 
     public Example<Comment> commentExample() {
         Comment comment = new Comment();
-        comment.setBody(this.getContent());
+        if(!(this.getContent()==null)){
+            comment.setBody(this.getContent());
+        }
+
         ExampleMatcher customExampleMatcher = ExampleMatcher.matchingAny()
-                .withMatcher("body", ExampleMatcher.GenericPropertyMatchers.contains().ignoreCase());
+                .withMatcher(Comment_.BODY, ExampleMatcher.GenericPropertyMatchers.contains().ignoreCase());
         Example<Comment> commentExample = Example.of(comment,customExampleMatcher);
         return  commentExample;
     }

@@ -7,7 +7,11 @@ import javax.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 @Entity
-@Table(name = "post_comments")
+@Table(name = "post_comments",
+indexes = {
+        @Index(name = "created_at_idx",columnList = Comment_.CREATED_AT),
+        @Index(name = "updated_at_idx",columnList = Comment_.UPDATED_AT)
+})
 public class Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
